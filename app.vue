@@ -1,5 +1,3 @@
 <template>
-  <div>
-    <NuxtWelcome />
-  </div>
+  <NoteCard :title="''" :content="''" :createdAt="new Date().getTime()" />
 </template>
