@@ -1,5 +1,5 @@
 <template>
-  <NoteCard :title="''" :content="''" :createdAt="new Date().getTime()" />
+  <NoteCard :isActive="true" :title="''" :content="''" :createdAt="new Date().getTime()" />
   <Preview :markdown="testMarkdown" />
 </template>
 

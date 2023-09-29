@@ -9,7 +9,8 @@
 const props = defineProps({
   title: String,
   createdAt: Number,
-  content: String
+  content: String,
+  isActive: Boolean
 })
 
 const { createdAt } = props
@@ -32,6 +33,7 @@ function showCorrectDate() {
   padding: 1rem;
   border-radius: 16px;
   border-bottom: 1px solid #F0F0F0;
+  transition: all .3s;
 
   .title {
     margin-bottom: 0.5rem;
@@ -43,6 +45,15 @@ function showCorrectDate() {
 
   .content {
     color: gray;
+  }
+
+  &:hover {
+    background-color: rgba(242, 200, 48, 0.4);
+    cursor: pointer;
+  }
+
+  &.active {
+    background-color: rgba(242, 200, 48, 1);
   }
 }
 </style>
