@@ -60,3 +60,18 @@ export function useParse(mardown: string): string {
 
   return html
 }
+
+export function useDateConverter(timestamp: number): string {
+  if (!timestamp) {
+    return ''
+  }
+
+  const dateObj = new Date(timestamp)
+  const date = dateObj.getDate().toString().padStart(2, '0')
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, '0')
+  const year = dateObj.getFullYear().toString();
+  const hours = dateObj.getHours().toString().padStart(2, '0')
+  const minutes = dateObj.getMinutes().toString().padStart(2, '0')
+
+  return `${date}/${month}/${year} ${hours}:${minutes}`
+}

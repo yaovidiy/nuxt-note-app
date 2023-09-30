@@ -10,7 +10,8 @@ const props = defineProps({
   title: String,
   createdAt: Number,
   content: String,
-  isActive: Boolean
+  isActive: Boolean,
+  cardIndex: Number
 })
 
 const { createdAt } = props
@@ -20,7 +21,7 @@ function showCorrectDate() {
   const createdAtDate = new Date(createdAt)
 
   if (nowDate.getDate() < createdAtDate.getDate()) {
-    return `${createdAtDate.getDate().padStart(2, '0')}.${(createdAtDate.getMonth() + 1).toString().padStart(2, '0')}.${createdAtDate.getFullYear()}`
+    return `${createdAtDate.getDate().toString().padStart(2, '0')}.${(createdAtDate.getMonth() + 1).toString().padStart(2, '0')}.${createdAtDate.getFullYear()}`
   }
 
   return `${createdAtDate.getHours().toString().padStart(2, '0')}:${createdAtDate.getMinutes().toString().padStart(2, '0')}`
