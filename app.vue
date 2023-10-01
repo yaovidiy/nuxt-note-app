@@ -138,9 +138,7 @@ function addNote(): void {
     createdAt: new Date().getTime()
   }
 
-  const length = placeholderCards.push(emptyNote)
-
-  activeCard.value = length - 1
+  placeholderCards.push(emptyNote)
 }
 
 function removeNote(): void {
