@@ -34,14 +34,14 @@
         <div class="cards" v-for="(card, index) in placeholderCards">
           <NoteCard
             @select="(i) => { editMode = false; activeCard = i; isMobileMenuOpened = false; activeEditorValue = card.content }"
-            :cardIndex="index" :selectedCard="activeCard" :title="card.title" :content="card.content"
-            :createdAt="card.createdAt" />
+            :cardIndex="index" :selectedCard="activeCard" :content="card.content" :createdAt="card.createdAt"
+            :key="card.content" />
         </div>
       </div>
       <div class="content">
         <div class="controls">
           <div class="btns">
-            <button @click="() => isMobileMenuOpened = true" class="btn mobile">
+            <button @click="() => isMobileMenuOpened = true" class="btn mobile menu">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 18L20 18" stroke="gray" stroke-width="2" stroke-linecap="round" />
                 <path d="M4 12L20 12" stroke="gray" stroke-width="2" stroke-linecap="round" />
@@ -99,17 +99,14 @@ let updateTimeout: ReturnType<typeof setTimeout> | null = null
 
 const placeholderCards = [
   {
-    title: '',
     content: '',
     createdAt: new Date().getTime() - 200000
   },
   {
-    title: '# Headline 1',
     content: '# Headline content \n asdfafasfasfasfasdfasf',
     createdAt: new Date().getTime() - 250000
   },
   {
-    title: '## Headline 2',
     content: '## Headline 2 content \n asdfasdfasdfasfasdfasdf',
     createdAt: new Date().getTime() - 400000
   }
@@ -231,6 +228,12 @@ label {
         margin-right: 16px;
       }
     }
+  }
+}
+
+.mobile {
+  &.menu {
+    margin-right: 16px;
   }
 }
 
