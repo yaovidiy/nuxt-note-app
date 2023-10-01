@@ -15,7 +15,7 @@
               </svg>
             </button>
 
-            <button class="btn">
+            <button @click="removeNote" class="btn">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6"
@@ -48,7 +48,7 @@
                 <path d="M4 6L20 6" stroke="gray" stroke-width="2" stroke-linecap="round" />
               </svg>
             </button>
-            <button @click="editMode = true" v-if="activeCard !== -1" class="btn">
+            <button @click="editMode = true" v-if="activeCard !== -1 && !editMode" class="btn">
               <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <g id="Complete">
                   <g id="edit">
@@ -60,6 +60,15 @@
                     </g>
                   </g>
                 </g>
+              </svg>
+            </button>
+
+            <button v-if="activeCard !== -1 && editMode" class="btn">
+              <svg width="24" height="24" viewBox="-10 -5 1034 1034" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+                <path fill="#000000" d="M922 319q-1 0 -2 1h-11v0h-836q-18 0 -33.5 8.5t-25.5 22.5q-17 26 -13 57v461q1 18 11 32.5t24 22.5q25 14 55 10v1l843 -1q18 -1 32.5 -11t22.5 -24q14 -24 10 -55h1l-1 -459q-1 -17 -11 -31.5t-24 -23.5q-19 -10 -42 -11zM918 367h2q12 0 20 5q6 3 8.5 6.5t2.5 9.5
+l1 456v3q2 16 -5 29q-3 5 -6.5 7.5t-9.5 2.5l-840 1h-3q-16 2 -28 -5q-6 -3 -8.5 -6.5t-2.5 -9.5v-458l-1 -4q-2 -14 5.5 -25t18.5 -11h837zM145 464v327h96v-188l96 120l96 -120v188h96v-327h-96l-96 120l-96 -120h-96zM697 464v168h-96l144 159l144 -159h-96v-168h-96z
+" />
               </svg>
             </button>
           </div>
@@ -132,6 +141,12 @@ function addNote(): void {
   const length = placeholderCards.push(emptyNote)
 
   activeCard.value = length - 1
+}
+
+function removeNote(): void {
+  placeholderCards.splice(activeCard.value, 1)
+
+  activeCard.value = -1
 }
 
 </script>
