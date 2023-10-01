@@ -100,19 +100,13 @@ l1 456v3q2 16 -5 29q-3 5 -6.5 7.5t-9.5 2.5l-840 1h-3q-16 2 -28 -5q-6 -3 -8.5 -6.
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 
-interface NoteItems {
-  uuid: string,
-  content: string,
-  createdAt: number
-}[]
-
 interface NoteItem {
   uuid: string,
   content: string,
   createdAt: number
 }
 
-const placeholderCards: NoteItems = reactive([])
+const placeholderCards: Array<NoteItem> = reactive([])
 
 onMounted(async () => {
   initDB()
@@ -139,7 +133,7 @@ function updateNoteContent(newContent: string): void {
 
 
     try {
-      const item = placeholderCards[activeCard.value]
+      const item: NoteItem = placeholderCards[activeCard.value]
       item.content = newContent
       await editItem(item.uuid, item)
       placeholderCards[activeCard.value].content = newContent
@@ -152,7 +146,7 @@ function updateNoteContent(newContent: string): void {
 
 async function addNote(): Promise<void> {
   try {
-    const newItem = await addItem('')
+    const newItem: NoteItem = await addItem('')
 
     placeholderCards.unshift(newItem)
   } catch (err) {
@@ -166,7 +160,8 @@ async function removeNote(): Promise<void> {
   }
 
   try {
-    await deleteItem(placeholderCards[activeCard.value].uuid)
+    const { uuid } = placeholderCards[activeCard.value]
+    await deleteItem(uuid)
 
     placeholderCards.splice(activeCard.value, 1)
     activeCard.value = -1

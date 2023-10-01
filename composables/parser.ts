@@ -47,7 +47,7 @@ const rules = [
 
 ]
 
-export function useParse(mardown: string): string {
+export function useParse(mardown: string | undefined): string {
   if (!mardown) {
     return ''
   }

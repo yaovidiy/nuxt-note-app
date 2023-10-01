@@ -27,7 +27,7 @@ const { createdAt, content } = props
 
 const noteDate = computed(() => {
   const nowDate = new Date()
-  const createdAtDate = new Date(createdAt)
+  const createdAtDate = new Date(createdAt || '')
 
   if (nowDate.getDate() < createdAtDate.getDate()) {
     return `${createdAtDate.getDate().toString().padStart(2, '0')}.${(createdAtDate.getMonth() + 1).toString().padStart(2, '0')}.${createdAtDate.getFullYear()}`

@@ -1,6 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { DB_NAME, STORE_NAME } from "./indexedDBInit"
 
+interface NoteItem {
+  uuid: string,
+  content: string,
+  createdAt: number
+}
+
 let db: IDBDatabase
 
 export function addItem(content: string): Promise<any> {
@@ -13,7 +19,7 @@ export function addItem(content: string): Promise<any> {
       if ([...db.objectStoreNames].find(name => name === STORE_NAME)) {
         const transaction = db.transaction(STORE_NAME, 'readwrite')
         const objStore = transaction.objectStore(STORE_NAME)
-        const payload = {
+        const payload: NoteItem = {
           uuid: uuidv4(),
           content,
           createdAt: new Date().getTime()
@@ -57,7 +63,7 @@ export function deleteItem(uuid: string): Promise<string> {
   })
 }
 
-export function editItem(uuid: string, payload: object): Promise<string> {
+export function editItem(uuid: string, payload: NoteItem): Promise<string> {
   const open = indexedDB.open(DB_NAME)
 
   return new Promise((resolve, reject) => {
@@ -85,7 +91,7 @@ export function editItem(uuid: string, payload: object): Promise<string> {
   })
 }
 
-export function getAllItems(): Promise<{ uuid: string, content: string, createdAt: number }[]> | Promise<[]> {
+export function getAllItems(): Promise<Array<NoteItem>> | Promise<[]> {
   const open = indexedDB.open(DB_NAME)
 
   return new Promise((resolve, reject) => {
@@ -98,7 +104,7 @@ export function getAllItems(): Promise<{ uuid: string, content: string, createdA
         const transaction = db.transaction(STORE_NAME)
         const objStore = transaction.objectStore(STORE_NAME)
         request = objStore.getAll()
-        request.onsuccess = () => resolve(request.result.sort((a: { uuid: string, content: string, createdAt: number }, b: { uuid: string, content: string, createdAt: number }) => b.createdAt - a.createdAt))
+        request.onsuccess = () => resolve(request.result.sort((a: NoteItem, b: NoteItem) => b.createdAt - a.createdAt))
       } else {
         reject('No such store in IndexedDB!')
       }
