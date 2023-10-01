@@ -1,5 +1,5 @@
 <template>
-  <div class="note" :class="{ active: isActive }">
+  <div @click="selectCard" class="note" :class="{ active: selectedCard === cardIndex }">
     <h3 class="title">{{ title || 'New note' }}</h3>
     <div class="footer">
       <span class="date">{{ showCorrectDate() }}</span><span class="content">{{ content || 'No additional text' }}</span>
@@ -12,9 +12,15 @@ const props = defineProps({
   title: String,
   createdAt: Number,
   content: String,
-  isActive: Boolean,
+  selectedCard: Number,
   cardIndex: Number
 })
+
+const emit = defineEmits(['select'])
+
+function selectCard() {
+  emit('select', props.cardIndex)
+}
 
 const { createdAt } = props
 

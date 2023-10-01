@@ -32,7 +32,9 @@
           </button>
         </div>
         <div class="cards" v-for="(card, index) in placeholderCards">
-          <NoteCard :cardIndex="index" :isActive="index === activeCard" :title="card.title" :content="card.content"
+          <NoteCard
+            @select="(i) => { activeCard = i; isMobileMenuOpened = false; activeEditorValue = placeholderCards[activeCard].content }"
+            :cardIndex="index" :selectedCard="activeCard" :title="card.title" :content="card.content"
             :createdAt="card.createdAt" />
         </div>
       </div>
@@ -46,7 +48,7 @@
                 <path d="M4 6L20 6" stroke="gray" stroke-width="2" stroke-linecap="round" />
               </svg>
             </button>
-            <button v-if="activeCard !== null" class="btn">
+            <button @click="editMode = true" v-if="activeCard !== -1" class="btn">
               <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <g id="Complete">
                   <g id="edit">
@@ -73,12 +75,12 @@
             <input class="search" type="text" id="search" placeholder="Search">
           </label>
         </div>
-        <div v-if="activeCard !== null">
+        <div v-if="activeCard !== -1">
           <h5 class="date">{{ useDateConverter(placeholderCards[activeCard]?.createdAt) }}</h5>
-          <Preview v-if="!editMode" :markdown="placeholderCards[activeCard]?.content" />
+          <Preview v-if="!editMode" :markdown="activeEditorValue" />
           <Editor v-if="editMode" v-model:value="activeEditorValue" />
         </div>
-        <div v-if="activeCard === null" class="placeholder">
+        <div v-if="activeCard === -1" class="placeholder">
           <h2>Select a note to edit and preview it</h2>
         </div>
       </div>
@@ -90,7 +92,7 @@
 import { ref } from 'vue'
 
 const isMobileMenuOpened = ref(false)
-const activeCard = ref(null)
+const activeCard = ref(-1)
 const editMode = ref(false)
 const activeEditorValue = ref('')
 
@@ -182,6 +184,10 @@ label {
     display: flex;
     justify-content: space-between;
   }
+
+  .date {
+    text-align: center;
+  }
 }
 
 .sidebar {
@@ -226,10 +232,12 @@ label {
     position: relative;
     left: 0;
     flex-basis: 25%;
+    padding: 0 16px;
   }
 
   .content {
     flex-basis: 75%;
+    padding: 0 16px;
   }
 
   .mobile {
