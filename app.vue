@@ -81,7 +81,10 @@ l1 456v3q2 16 -5 29q-3 5 -6.5 7.5t-9.5 2.5l-840 1h-3q-16 2 -28 -5q-6 -3 -8.5 -6.
                   stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </button>
-            <input class="search" type="text" id="search" placeholder="Search">
+            <input @input="(e: Event) => {
+              const { target } = e
+              search((target as HTMLInputElement).value)
+            }" class="search" type="text" id="search" placeholder="Search">
           </label>
         </div>
         <div v-if="activeCard !== -1">
@@ -106,14 +109,15 @@ interface NoteItem {
   createdAt: number
 }
 
-const placeholderCards: Array<NoteItem> = reactive([])
+const placeholderCards: Ref<Array<NoteItem>> = ref([])
+let dbEntries: Array<NoteItem> = []
 
 onMounted(async () => {
   initDB()
 
-  const dbEntries = await getAllItems()
+  dbEntries = await getAllItems()
 
-  dbEntries.forEach((entry: NoteItem) => placeholderCards.push(entry))
+  placeholderCards.value = dbEntries
 })
 
 const isMobileMenuOpened = ref(false)
@@ -121,22 +125,36 @@ const activeCard = ref(-1)
 const editMode = ref(false)
 const activeEditorValue = ref('')
 let updateTimeout: ReturnType<typeof setTimeout> | null = null
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
+
+function search(searchValue: string): void {
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+
+  searchTimeout = setTimeout(() => {
+    activeCard.value = -1
+    activeEditorValue.value = ''
+    editMode.value = false
+    placeholderCards.value = dbEntries.filter((entry: NoteItem) => entry.content.toLowerCase().includes(searchValue.toLowerCase()))
+  }, 500)
+}
 
 function updateNoteContent(newContent: string): void {
   if (updateTimeout) {
     clearTimeout(updateTimeout)
   }
   updateTimeout = setTimeout(async () => {
-    if (!placeholderCards[activeCard.value]) {
+    if (!placeholderCards.value[activeCard.value]) {
       return
     }
 
 
     try {
-      const item: NoteItem = placeholderCards[activeCard.value]
+      const item: NoteItem = placeholderCards.value[activeCard.value]
       item.content = newContent
       await editItem(item.uuid, item)
-      placeholderCards[activeCard.value].content = newContent
+      placeholderCards.value[activeCard.value].content = newContent
     } catch (err) {
       console.log(err)
     }
@@ -148,7 +166,7 @@ async function addNote(): Promise<void> {
   try {
     const newItem: NoteItem = await addItem('')
 
-    placeholderCards.unshift(newItem)
+    placeholderCards.value.unshift(newItem)
   } catch (err) {
     alert(err)
   }
@@ -160,10 +178,10 @@ async function removeNote(): Promise<void> {
   }
 
   try {
-    const { uuid } = placeholderCards[activeCard.value]
+    const { uuid } = placeholderCards.value[activeCard.value]
     await deleteItem(uuid)
 
-    placeholderCards.splice(activeCard.value, 1)
+    placeholderCards.value.splice(activeCard.value, 1)
     activeCard.value = -1
   } catch (err) {
     console.log(err)
