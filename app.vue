@@ -166,6 +166,7 @@ async function addNote(): Promise<void> {
   try {
     const newItem: NoteItem = await addItem('')
 
+    activeCard.value = -1
     placeholderCards.value.unshift(newItem)
   } catch (err) {
     alert(err)
