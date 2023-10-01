@@ -1,5 +1,5 @@
 <template>
-  <textarea v-bind:value="value" v-on:input="$emit('update:value', $event.target.value)" class="editor"></textarea>
+  <textarea v-bind:value="value" v-on:input="$emit('updateNoteContent', $event.target.value)" class="editor"></textarea>
 </template>
 
 <script setup>

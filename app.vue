@@ -33,7 +33,7 @@
         </div>
         <div class="cards" v-for="(card, index) in placeholderCards">
           <NoteCard
-            @select="(i) => { activeCard = i; isMobileMenuOpened = false; activeEditorValue = card.content }"
+            @select="(i) => { editMode = false; activeCard = i; isMobileMenuOpened = false; activeEditorValue = card.content }"
             :cardIndex="index" :selectedCard="activeCard" :title="card.title" :content="card.content"
             :createdAt="card.createdAt" />
         </div>
@@ -78,7 +78,7 @@
         <div v-if="activeCard !== -1">
           <h5 class="date">{{ useDateConverter(placeholderCards[activeCard]?.createdAt) }}</h5>
           <Preview :key="activeCard" v-if="!editMode" :markdown="activeEditorValue" />
-          <Editor v-if="editMode" v-model:value="activeEditorValue" />
+          <Editor @update-note-content="updateNoteContent" v-if="editMode" v-model:value="activeEditorValue" />
         </div>
         <div v-if="activeCard === -1" class="placeholder">
           <h2>Select a note to edit and preview it</h2>
@@ -95,6 +95,7 @@ const isMobileMenuOpened = ref(false)
 const activeCard = ref(-1)
 const editMode = ref(false)
 const activeEditorValue = ref('')
+let updateTimeout: ReturnType<typeof setTimeout> | null = null
 
 const placeholderCards = [
   {
@@ -113,6 +114,17 @@ const placeholderCards = [
     createdAt: new Date().getTime() - 400000
   }
 ]
+
+function updateNoteContent(newContent: string): void {
+  if (updateTimeout) {
+    clearTimeout(updateTimeout)
+  }
+  updateTimeout = setTimeout(() => {
+    if (placeholderCards[activeCard.value]) {
+      placeholderCards[activeCard.value].content = newContent
+    }
+  }, 500)
+}
 
 </script>
 
