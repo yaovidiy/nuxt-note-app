@@ -35,7 +35,7 @@
           <NoteCard
             @select="(i) => { editMode = false; activeCard = i; isMobileMenuOpened = false; activeEditorValue = card.content }"
             :cardIndex="index" :selectedCard="activeCard" :content="card.content" :createdAt="card.createdAt"
-            :key="card.content" />
+            :key="`${card.createdAt}|${card.content}`" />
         </div>
       </div>
       <div class="content">
@@ -98,7 +98,29 @@ l1 456v3q2 16 -5 29q-3 5 -6.5 7.5t-9.5 2.5l-840 1h-3q-16 2 -28 -5q-6 -3 -8.5 -6.
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+
+interface NoteItems {
+  uuid: string,
+  content: string,
+  createdAt: number
+}[]
+
+interface NoteItem {
+  uuid: string,
+  content: string,
+  createdAt: number
+}
+
+const placeholderCards: NoteItems = reactive([])
+
+onMounted(async () => {
+  initDB()
+
+  const dbEntries = await getAllItems()
+
+  dbEntries.forEach((entry: NoteItem) => placeholderCards.push(entry))
+})
 
 const isMobileMenuOpened = ref(false)
 const activeCard = ref(-1)
@@ -106,48 +128,51 @@ const editMode = ref(false)
 const activeEditorValue = ref('')
 let updateTimeout: ReturnType<typeof setTimeout> | null = null
 
-const placeholderCards = reactive([
-  {
-    content: '',
-    createdAt: new Date().getTime() - 200000
-  },
-  {
-    content: '# Headline content \n asdfafasfasfasfasdfasf',
-    createdAt: new Date().getTime() - 250000
-  },
-  {
-    content: '## Headline 2 content \n asdfasdfasdfasfasdfasdf',
-    createdAt: new Date().getTime() - 400000
-  }
-])
-
 function updateNoteContent(newContent: string): void {
   if (updateTimeout) {
     clearTimeout(updateTimeout)
   }
-  updateTimeout = setTimeout(() => {
-    if (placeholderCards[activeCard.value]) {
-      placeholderCards[activeCard.value].content = newContent
+  updateTimeout = setTimeout(async () => {
+    if (!placeholderCards[activeCard.value]) {
+      return
     }
+
+
+    try {
+      const item = placeholderCards[activeCard.value]
+      item.content = newContent
+      await editItem(item.uuid, item)
+      placeholderCards[activeCard.value].content = newContent
+    } catch (err) {
+      console.log(err)
+    }
+
   }, 500)
 }
 
-function addNote(): void {
-  const emptyNote = {
-    content: '',
-    createdAt: new Date().getTime()
-  }
+async function addNote(): Promise<void> {
+  try {
+    const newItem = await addItem('')
 
-  placeholderCards.push(emptyNote)
+    placeholderCards.unshift(newItem)
+  } catch (err) {
+    alert(err)
+  }
 }
 
-function removeNote(): void {
+async function removeNote(): Promise<void> {
   if (!confirm('You sure you want delete this note?')) {
     return
   }
-  placeholderCards.splice(activeCard.value, 1)
 
-  activeCard.value = -1
+  try {
+    await deleteItem(placeholderCards[activeCard.value].uuid)
+
+    placeholderCards.splice(activeCard.value, 1)
+    activeCard.value = -1
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 </script>

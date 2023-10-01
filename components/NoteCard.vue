@@ -57,6 +57,9 @@ const title = computed(() => {
 
   .title {
     margin: 0 0 0.5rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .footer {
