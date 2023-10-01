@@ -1,15 +1,16 @@
 <template>
   <div @click="selectCard" class="note" :class="{ active: selectedCard === cardIndex }">
-    <h3 class="title">{{ title || 'New note' }}</h3>
+    <h3 class="title">{{ title }}</h3>
     <div class="footer">
-      <span class="date">{{ showCorrectDate() }}</span><span class="content">{{ content || 'No additional text' }}</span>
+      <span class="date">{{ noteDate }}</span><span class="content">{{ content || 'No additional text' }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 const props = defineProps({
-  title: String,
   createdAt: Number,
   content: String,
   selectedCard: Number,
@@ -22,9 +23,9 @@ function selectCard() {
   emit('select', props.cardIndex)
 }
 
-const { createdAt } = props
+const { createdAt, content } = props
 
-function showCorrectDate() {
+const noteDate = computed(() => {
   const nowDate = new Date()
   const createdAtDate = new Date(createdAt)
 
@@ -33,7 +34,16 @@ function showCorrectDate() {
   }
 
   return `${createdAtDate.getHours().toString().padStart(2, '0')}:${createdAtDate.getMinutes().toString().padStart(2, '0')}`
-}
+})
+
+const title = computed(() => {
+  if (!content) {
+    return 'New note'
+  }
+
+  return content?.split('\n')[0]
+})
+
 
 </script>
 
