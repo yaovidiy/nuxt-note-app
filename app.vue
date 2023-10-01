@@ -4,7 +4,7 @@
       <div :class="{ active: isMobileMenuOpened }" class="sidebar">
         <div class="controls">
           <div class="btns">
-            <button class="btn">
+            <button @click="addNote" class="btn">
               <svg fill="gray" width="24" height="24" viewBox="0 0 32 32"
                 style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" version="1.1"
                 xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:serif="http://www.serif.com/"
@@ -89,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 
 const isMobileMenuOpened = ref(false)
 const activeCard = ref(-1)
@@ -97,7 +97,7 @@ const editMode = ref(false)
 const activeEditorValue = ref('')
 let updateTimeout: ReturnType<typeof setTimeout> | null = null
 
-const placeholderCards = [
+const placeholderCards = reactive([
   {
     content: '',
     createdAt: new Date().getTime() - 200000
@@ -110,7 +110,7 @@ const placeholderCards = [
     content: '## Headline 2 content \n asdfasdfasdfasfasdfasdf',
     createdAt: new Date().getTime() - 400000
   }
-]
+])
 
 function updateNoteContent(newContent: string): void {
   if (updateTimeout) {
@@ -121,6 +121,17 @@ function updateNoteContent(newContent: string): void {
       placeholderCards[activeCard.value].content = newContent
     }
   }, 500)
+}
+
+function addNote(): void {
+  const emptyNote = {
+    content: '',
+    createdAt: new Date().getTime()
+  }
+
+  const length = placeholderCards.push(emptyNote)
+
+  activeCard.value = length - 1
 }
 
 </script>
