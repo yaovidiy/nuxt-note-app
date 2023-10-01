@@ -1,7 +1,9 @@
 <template>
   <div class="note" :class="{ active: isActive }">
     <h3 class="title">{{ title || 'New note' }}</h3>
-    <span class="date">{{ showCorrectDate() }}</span><span class="content">{{ content || 'No additional text' }}</span>
+    <div class="footer">
+      <span class="date">{{ showCorrectDate() }}</span><span class="content">{{ content || 'No additional text' }}</span>
+    </div>
   </div>
 </template>
 
@@ -35,18 +37,29 @@ function showCorrectDate() {
   border-radius: 16px;
   border-bottom: 1px solid #F0F0F0;
   transition: all .3s;
+  overflow: hidden;
 
   .title {
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.5rem;
   }
 
-  .date {
-    margin-right: 0.5rem;
+  .footer {
+    display: flex;
+    align-items: center;
+
+    .date {
+      margin-right: 0.5rem;
+    }
+
+    .content {
+      display: inline-block;
+      color: gray;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 
-  .content {
-    color: gray;
-  }
 
   &:hover {
     background-color: rgba(242, 200, 48, 0.4);
