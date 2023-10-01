@@ -33,7 +33,7 @@
         </div>
         <div class="cards" v-for="(card, index) in placeholderCards">
           <NoteCard
-            @select="(i) => { activeCard = i; isMobileMenuOpened = false; activeEditorValue = placeholderCards[activeCard].content }"
+            @select="(i) => { activeCard = i; isMobileMenuOpened = false; activeEditorValue = card.content }"
             :cardIndex="index" :selectedCard="activeCard" :title="card.title" :content="card.content"
             :createdAt="card.createdAt" />
         </div>
@@ -77,7 +77,7 @@
         </div>
         <div v-if="activeCard !== -1">
           <h5 class="date">{{ useDateConverter(placeholderCards[activeCard]?.createdAt) }}</h5>
-          <Preview v-if="!editMode" :markdown="activeEditorValue" />
+          <Preview :key="activeCard" v-if="!editMode" :markdown="activeEditorValue" />
           <Editor v-if="editMode" v-model:value="activeEditorValue" />
         </div>
         <div v-if="activeCard === -1" class="placeholder">
