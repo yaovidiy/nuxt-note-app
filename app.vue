@@ -142,6 +142,9 @@ function addNote(): void {
 }
 
 function removeNote(): void {
+  if (!confirm('You sure you want delete this note?')) {
+    return
+  }
   placeholderCards.splice(activeCard.value, 1)
 
   activeCard.value = -1
