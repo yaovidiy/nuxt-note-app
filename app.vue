@@ -23,6 +23,19 @@
               </svg>
             </button>
           </div>
+          <label for="search" class="mobile">
+            <button class="btn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M14.9536 14.9458L21 21M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+                  stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <input @input="(e: Event) => {
+              const { target } = e
+              search((target as HTMLInputElement).value)
+            }" class="search" type="text" id="search" placeholder="Search">
+          </label>
           <button @click="() => isMobileMenuOpened = false" class="btn mobile">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -73,7 +86,7 @@ l1 456v3q2 16 -5 29q-3 5 -6.5 7.5t-9.5 2.5l-840 1h-3q-16 2 -28 -5q-6 -3 -8.5 -6.
             </button>
           </div>
 
-          <label for="search">
+          <label for="search" class="tablet">
             <button class="btn">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -196,6 +209,10 @@ async function removeNote(): Promise<void> {
   overflow: hidden;
 }
 
+.tablet {
+  display: none;
+}
+
 .btn {
   display: flex;
   justify-content: center;
@@ -314,6 +331,10 @@ label {
     left: 0;
     flex-basis: 25%;
     padding: 0 16px;
+  }
+
+  .tablet {
+    display: block;
   }
 
   .content {
